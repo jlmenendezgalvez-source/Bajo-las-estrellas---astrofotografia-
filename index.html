@@ -86,7 +86,7 @@ function renderPosts(entries){
     const content = entry.content.$t;
     const id = entry.id.$t.split('/').pop(); // ID único de Blogger
     const excerpt = content.replace(/<[^>]+>/g,'').slice(0,220) + '…';
-    const imgMatch = content.match(/<img[^>]+src="([^\"]+)"/);
+    const imgMatch = content.match(/<img[^>]+src="([^"]+)"/);
     const image = imgMatch ? imgMatch[1].replace(/\/s\d+-c\//,'/s800/') : null;
 
     const post = document.createElement('div');
@@ -120,6 +120,3 @@ function renderPosts(entries){
   });
 }
 </script>
-
-</body>
-</html>
