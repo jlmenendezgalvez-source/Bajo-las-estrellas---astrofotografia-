@@ -1,0 +1,15 @@
+body { margin:0; font-family:'Inter',sans-serif; background:#0b0e14; color:#e6e6e6; line-height:1.7; }
+header { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:4rem; background:linear-gradient(rgba(11,14,20,0.7),rgba(11,14,20,0.9)), url('img/hero.jpg') center/cover no-repeat; }
+header h1{font-family:'Playfair Display',serif;font-size:3rem;margin-bottom:1rem;}
+header p{max-width:720px;font-size:1.1rem;}
+nav{position:fixed;top:0;width:100%;background:rgba(11,14,20,0.85);backdrop-filter:blur(6px);padding:1rem 2rem;z-index:10;}
+nav a{color:#e6e6e6;margin-right:1.5rem;text-decoration:none;font-size:0.9rem;letter-spacing:0.05em;}
+section{padding:5rem 4rem;max-width:1100px;margin:auto;}
+section h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:2rem;}
+.post{margin-bottom:3rem;opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.post.visible{opacity:1;transform:translateY(0);}
+.post h3{font-family:'Playfair Display',serif;margin-bottom:0.5rem;}
+.post img{max-width:100%;border-radius:12px;margin-bottom:1rem;filter:blur(20px);transition:filter 0.6s ease-out;}
+.post img.loaded{filter:blur(0);}
+footer{padding:3rem;text-align:center;font-size:0.8rem;color:#aaa;}
+@media(max-width:768px){header{padding:2.5rem 1.5rem;text-align:center;}header h1{font-size:2.2rem;}header p{font-size:1rem;}nav{padding:0.8rem 1rem;overflow-x:auto;white-space:nowrap;}nav a{margin-right:1rem;font-size:0.8rem;}section{padding:3rem 1.5rem;}section h2{font-size:1.6rem;}.post img{border-radius:10px;}.filters button{margin:0.3rem 0.3rem 0.3rem 0;font-size:0.75rem;}}

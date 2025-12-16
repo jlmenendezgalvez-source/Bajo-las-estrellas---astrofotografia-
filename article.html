@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artículo - Bajo las estrellas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+<a href="index.html">Inicio</a>
+</nav>
+<section id="article">
+<h2 id="article-title">Cargando artículo...</h2>
+<img id="article-image" style="max-width:100%;border-radius:12px;margin-bottom:1rem;filter:blur(20px);transition:filter 0.6s ease-out;" />
+<div id="article-content">Por favor, espera mientras se carga el contenido.</div>
+</section>
+<footer>© Bajo las estrellas – Astrofotografía</footer>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+if(!id) document.getElementById('article-content').textContent='No se encontró el artículo.';
+fetch('https://bajolasestrellas-astrofotografia.blogspot.com/feeds/posts/default?alt=json')
+.then(res=>res.json())
+.then(data=>{
+const entry = data.feed.entry.find(e=>e.id.$t.includes(id));
+if(!entry){document.getElementById('article-content').textContent='Artículo no encontrado.'; return;}
+document.getElementById('article-title').textContent = entry.title.$t;
+const contentDiv = document.getElementById('article-content');
+contentDiv.innerHTML = entry.content.$t;
+const imgMatch = entry.content.$t.match(/<img[^>]+src="([^"]+)"/);
+if(imgMatch){
+const img = document.getElementById('article-image');
+img.src = imgMatch[1].replace(/\/s\d+-c\//,'/s800/');
+img.addEventListener('load',()=>img.classList.add('loaded'));
+} else { document.getElementById('article-image').style.display='none'; }
+})
+.catch(err=>{document.getElementById('article-content').textContent='Error al cargar el artículo.'; console.error(err);});
+</script>
+</body>
+</html>
