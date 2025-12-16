@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -9,50 +10,116 @@
 </head>
 <body>
 
-
 <nav>
-<a href="index.html">Inicio</a>
-<a href="index.html#cronicas">Crónicas del cielo</a>
-<a href="index.html#galeria">Galería</a>
-<a href="index.html#podcast">Podcast</a>
-<a href="index.html#sobre">Sobre mí</a>
+  <a href="index.html">Inicio</a>
+  <a href="index.html#cronicas">Crónicas del cielo</a>
+  <a href="index.html#galeria">Galería</a>
+  <a href="index.html#podcast">Podcast</a>
+  <a href="index.html#sobre">Sobre mí</a>
 </nav>
 
-
 <header id="inicio">
-<h1>Bajo las estrellas – Astrofotografía</h1>
-<p>El proyecto “Bajo las estrellas – Astrofotografía” busca invitar a contemplar y narrar el universo, transformando la observación del cielo en un diálogo poético y consciente entre el cosmos y la mirada humana.</p>
+  <h1>Bajo las estrellas – Astrofotografía</h1>
+  <p>El proyecto “Bajo las estrellas – Astrofotografía” busca invitar a contemplar y narrar el universo, transformando la observación del cielo en un diálogo poético y consciente entre el cosmos y la mirada humana.</p>
 </header>
 
-
 <section id="cronicas">
-<h2>Crónicas del cielo</h2>
-<div class="filters" style="margin-bottom:2rem;">
-<button class="filter" data-tag="">Todas</button>
-<button class="filter" data-tag="Luna">Luna</button>
-<button class="filter" data-tag="Nebulosas">Nebulosas</button>
-<button class="filter" data-tag="Galaxias">Galaxias</button>
-</div>
-<div id="posts"></div>
+  <h2>Crónicas del cielo</h2>
+  <div class="filters" style="margin-bottom:2rem;">
+    <button class="filter" data-tag="">Todas</button>
+    <button class="filter" data-tag="Luna">Luna</button>
+    <button class="filter" data-tag="Nebulosas">Nebulosas</button>
+    <button class="filter" data-tag="Galaxias">Galaxias</button>
+  </div>
+  <div id="posts"></div>
 </section>
-
 
 <section id="galeria">
-<h2>Galería</h2>
-<p>Selección de imágenes que condensan noches, paciencia y fotones antiguos.</p>
+  <h2>Galería</h2>
+  <p>Selección de imágenes que condensan noches, paciencia y fotones antiguos.</p>
 </section>
-
 
 <section id="podcast">
-<h2>Escuchar el Universo</h2>
-<p>Reflexiones y relatos sonoros para acompañar la contemplación del cielo.</p>
+  <h2>Escuchar el Universo</h2>
+  <p>Reflexiones y relatos sonoros para acompañar la contemplación del cielo.</p>
 </section>
-
 
 <section id="sobre">
-<h2>Sobre mí</h2>
-<p>Divulgador astronómico y astrofotógrafo. Uso la imagen y la palabra como instrumentos para devolver al cielo su capacidad de asombro.</p>
+  <h2>Sobre mí</h2>
+  <p>Divulgador astronómico y astrofotógrafo. Uso la imagen y la palabra como instrumentos para devolver al cielo su capacidad de asombro.</p>
 </section>
 
+<footer>© Bajo las estrellas – Astrofotografía</footer>
 
+<script>
+const RSS_URL = 'https://bajolasestrellas-astrofotografia.blogspot.com/feeds/posts/default?alt=json';
+let allPosts = [];
+
+fetch(RSS_URL)
+  .then(res => res.json())
+  .then(data => {
+    allPosts = data.feed.entry;
+    applyFilter();
+
+    document.querySelectorAll('.filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.dataset.tag;
+        location.hash = tag ? `tag=${encodeURIComponent(tag)}` : '';
+        applyFilter();
+      });
+    });
+  })
+  .catch(err => console.error(err));
+
+function applyFilter() {
+  const hash = location.hash.replace('#','');
+  const tag = hash.startsWith('tag=') ? decodeURIComponent(hash.split('=')[1]) : '';
+  const filtered = tag ? allPosts.filter(e => e.category && e.category.some(c => c.term === tag)) : allPosts;
+  renderPosts(filtered);
+}
+
+function renderPosts(entries){
+  const postsDiv = document.getElementById('posts');
+  postsDiv.innerHTML = '';
+  entries.slice(0,6).forEach(entry => {
+    const title = entry.title.$t;
+    const content = entry.content.$t;
+    const id = entry.id.$t.split('/').pop(); // ID único de Blogger
+    const excerpt = content.replace(/<[^>]+>/g,'').slice(0,220) + '…';
+    const imgMatch = content.match(/<img[^>]+src="([^\"]+)"/);
+    const image = imgMatch ? imgMatch[1].replace(/\/s\d+-c\//,'/s800/') : null;
+
+    const post = document.createElement('div');
+    post.className = 'post';
+
+    if(image){
+      const img = document.createElement('img');
+      img.src = image;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.addEventListener('load',()=>img.classList.add('loaded'));
+      post.appendChild(img);
+    }
+
+    const h3 = document.createElement('h3');
+    h3.textContent = title;
+
+    const p = document.createElement('p');
+    p.textContent = excerpt;
+
+    const a = document.createElement('a');
+    a.href = `article.html?id=${id}`; // Enlace interno automático
+    a.textContent = 'Seguir leyendo';
+
+    post.appendChild(h3);
+    post.appendChild(p);
+    post.appendChild(a);
+
+    postsDiv.appendChild(post);
+    requestAnimationFrame(()=>post.classList.add('visible'));
+  });
+}
+</script>
+
+</body>
 </html>
